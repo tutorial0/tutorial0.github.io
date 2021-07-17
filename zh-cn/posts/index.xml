@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on tutorial&#39;s Blog</title>
+    <link>/zh-cn/posts/</link>
+    <description>Recent content in Posts on tutorial&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>Copyright © 2021-{year} tutorial. All Rights Reserved.</copyright>
+    <lastBuildDate>Thu, 15 Jul 2021 11:16:22 +0800</lastBuildDate><atom:link href="/zh-cn/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>对代码阅读思路的研究</title>
+      <link>/zh-cn/posts/about-code-reading/</link>
+      <pubDate>Thu, 15 Jul 2021 11:16:22 +0800</pubDate>
+      
+      <guid>/zh-cn/posts/about-code-reading/</guid>
+      <description>对于一个非专业开发而言，提升开发能力是一个很困难的事，我在这方面走了很多弯路，近期感觉略有所得，所以写个文章分享下感受。 我的编程能力提升之路</description>
+    </item>
+    
+  </channel>
+</rss>

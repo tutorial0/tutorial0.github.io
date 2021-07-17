@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on tutorial&#39;s Blog</title>
+    <link>/zh-cn/categories/</link>
+    <description>Recent content in Categories on tutorial&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>Copyright © 2021-{year} tutorial. All Rights Reserved.</copyright>
+    <lastBuildDate>Thu, 15 Jul 2021 11:16:22 +0800</lastBuildDate><atom:link href="/zh-cn/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Coding</title>
+      <link>/zh-cn/categories/coding/</link>
+      <pubDate>Thu, 15 Jul 2021 11:16:22 +0800</pubDate>
+      
+      <guid>/zh-cn/categories/coding/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
