@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>网络安全 | tutorial&#39;s Blog</title><link rel="apple-touch-icon" href="/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="/images/favicons/manifest.json">
+<link rel="icon" href="/images/favicons/favicon.ico">
+<meta name="keywords" content="网络安全, 编程, 阅读" />
+<meta name="description" content="分享自己的安全研究和其他想法" /><meta itemprop="name" content="网络安全">
+<meta itemprop="description" content="分享自己的安全研究和其他想法"><meta property="og:title" content="网络安全" />
+<meta property="og:description" content="分享自己的安全研究和其他想法" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="/zh-cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" /><meta property="og:site_name" content="tutorial&#39;s Blog" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="网络安全"/>
+<meta name="twitter:description" content="分享自己的安全研究和其他想法"/>
+<link rel="alternate" type="application/rss+xml" href="/zh-cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/index.xml" title="tutorial's Blog" /><meta data-name="palette" content="brown"><link rel=stylesheet href="/css/bundle.min.ce383e7297312216c2d2ced30574d5a9ae83c451db9f064a454509955ae2462d.css" integrity="sha256-zjg&#43;cpcxIhbC0s7TBXTVqa6DxFHbnwZKRUUJlVriRi0=" crossorigin="anonymous"><script src="/js/bundle.min.ad6d83537f5b4374c837a12a76422496582e04d1dde91bbb443641ec12c506c6.js" integrity="sha256-rW2DU39bQ3TIN6EqdkIkllguBNHd6Ru7RDZB7BLFBsY=" crossorigin="anonymous"></script><script defer src="/js/katex.e1cebc63ad855fdf787661e76de78e21c446bda0d4dddca66db0e345eb1c2be4.js" integrity="sha256-4c68Y62FX994dmHnbeeOIcRGvaDU3dymbbDjRescK&#43;Q=" crossorigin="anonymous"></script>
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?9a57acadb285a103e5e16219a11d55af";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script></head><body class="mode-dark"><header><nav class="navbar navbar-expand-xl fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="/zh-cn/">
+      <img class="logo" alt="Logo" src="/images/logo.png" loading="lazy">tutorial</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-1 mb-2 mb-lg-0"><form class="search-bar d-flex ms-1" action="/zh-cn/search">
+  <div class="input-group input-group-sm">
+    <button class="btn btn-search disabled position-absolute left-0" type="submit"><i class="fas fa-fw fa-search"></i></button>
+    <input class="form-control rounded-pill" id="searchQuery" name="q" type="search" aria-label="Search">
+  </div>
+</form></ul><ul class="navbar-nav me-1 mb-2 mb-lg-0 me-1 ms-auto"><li class="nav-item">
+  <a class="nav-link" data-bs-toggle="offcanvas" href="#offcanvasSettings" role="button"
+    aria-controls="offcanvasSettings">
+    <i class="fas fa-fw fa-sliders-h"></i> 设置
+  </a>
+</li>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings"
+  aria-labelledby="offcanvasSettingsLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" w id="offcanvasSettingsLabel"><i class="fas fa-fw fa-sliders-h"></i> 设置</h5>
+    <a role="button" data-bs-dismiss="offcanvas" aria-label="Close">
+      <span class="fas fa-2x fa-fw fa-times"></span>
+    </a>
+  </div>
+  <div class="offcanvas-body"><section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-language"></i> 语言</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <select class="form-select form-select-sm language-picker" aria-label="Language dropdown" onchange="window.location = this.value;">
+          <option value="/zh-cn/" selected>简体中文</option><option value="/zh-tw/"></option></select>
+    </div>
+  </form>
+</section>
+<section class="setting">
+  <form class="font-size-switcher-form row">
+    <div class="col-auto">
+      <label for="fontSize" class="form-label"><i class="fas fa-fw fa-font"></i> 字体大小</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <input type="range" class="form-range" min="-2" max="2" id="fontSize">
+    </div>
+  </form>
+</section>
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> 配色</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <span id="btnPalette" class="btn btn-sm"><i class="fas fa-eye-dropper"></i></span>
+    </div>
+  </form>
+  <div class="container mt-2 visually-hidden" id="palettePicker">
+    <div class="btn-group"><button type="button" id="palette-blue" title="蓝色" 
+          class="btn btn-sm palette bg-blue d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-blue-gray" title="蓝灰色" 
+          class="btn btn-sm palette bg-blue-gray d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-brown" title="棕色" 
+          class="btn btn-sm palette bg-brown d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-cyan" title="青色" 
+          class="btn btn-sm palette bg-cyan d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-green" title="绿色" 
+          class="btn btn-sm palette bg-green d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-indigo" title="靛青色" 
+          class="btn btn-sm palette bg-indigo d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-orange" title="橙色" 
+          class="btn btn-sm palette bg-orange d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-pink" title="粉色" 
+          class="btn btn-sm palette bg-pink d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-purple" title="紫色" 
+          class="btn btn-sm palette bg-purple d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-red" title="红色" 
+          class="btn btn-sm palette bg-red d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-teal" title="蓝绿色" 
+          class="btn btn-sm palette bg-teal d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-yellow" title="黄色" 
+          class="btn btn-sm palette bg-yellow d-flex align-items-center justify-content-center">
+        </button></button>
+    </div>
+  </div>
+</section></div>
+</div></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row" aria-label="breadcrumb">
+  <ol class="breadcrumb surface"><li class="breadcrumb-item"><a href="/zh-cn/">主页</a></li><li class="breadcrumb-item"><a href="/zh-cn/tags/">Tags</a></li><li class="breadcrumb-item active">网络安全</li></ol>
+</nav><div class="posts mb-4"><article class="post row surface"><div class="post-body">
+        <h2 class="post-title mb-4"><a href="/zh-cn/posts/positive-secscanner-arch/">主动扫描器没有架构一说吗?</a></h2><div class="post-meta mb-3">
+  <span class="post-date me-2">
+    <i class="fas fa-fw fa-calendar-alt"></i>2021-09-26
+  </span>
+  <span class="post-reading-time me-2">
+    <i class="fas fa-fw fa-coffee"></i>6 分钟阅读
+  </span>
+<a href="/zh-cn/categories/security/" class="post-taxonomy">#Security</a><a href="/zh-cn/tags/%E7%BC%96%E7%A8%8B/" class="post-taxonomy">#编程</a><a href="/zh-cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" class="post-taxonomy">#网络安全</a><a href="/zh-cn/tags/%E4%B8%BB%E5%8A%A8%E6%89%AB%E6%8F%8F%E5%99%A8/" class="post-taxonomy">#主动扫描器</a><a href="/zh-cn/tags/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/" class="post-taxonomy">#安全开发</a></div>
+<div class="post-summary mb-3">记得以前看过一个文章，有一句话让我一直忘不掉，他说“黑盒扫描器根本没什么架构，只要POC够多就好了“。 当时我以为只是一家之言，应该不会有什么</div>
+      </div>
+    </article></div><div class="row table-responsive mb-3"></div>
+</div>
+
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container"><section class="profile surface row">
+  <div class="col-xl-6 d-flex align-items-center justify-content-center">
+    <img class="profile-avatar img-fluid" src="/images/profile.jpg" alt="tutorial" loading="lazy">
+  </div>
+  <div class="col-xl-6">
+    <h5 class="profile-name my-2">tutorial</h5><div class="profile-bio mb-2">安全工程师, 程序员, 读者</div><div class="profile-company mb-2"><i class="fas fa-fw fa-building"></i>Google</div><div class="profile-location mb-2"><i class="fas fa-fw fa-map-marker-alt"></i>Earth</div></div>
+</section><section class="recent-posts row surface">
+  <h4>最近文章</h4>
+  <ul><li><a href="/zh-cn/posts/positive-secscanner-arch/">主动扫描器没有架构一说吗?</a></li><li><a href="/zh-cn/posts/about-code-reading/">对代码阅读思路的研究</a></li></ul>
+</section><section class="taxonomy-categories row surface">
+      <h4>
+        <a href="/zh-cn/categories">分类</a>
+      </h4>
+      <div><a href="/zh-cn/categories/coding/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="Coding">
+          Coding <span class="badge rounded-pill">1</span>
+        </a><a href="/zh-cn/categories/security/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="Security">
+          Security <span class="badge rounded-pill">1</span>
+        </a></div>
+    </section><section class="taxonomy-series row surface">
+      <h4>
+        <a href="/zh-cn/series">专栏</a>
+      </h4>
+      <div><a href="/zh-cn/series/%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB%E7%B3%BB%E5%88%97/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="代码阅读系列">
+          代码阅读系列 <span class="badge rounded-pill">1</span>
+        </a></div>
+    </section><section class="taxonomy-tags row surface">
+      <h4>
+        <a href="/zh-cn/tags">标签</a>
+      </h4>
+      <div><a href="/zh-cn/tags/%E7%BC%96%E7%A8%8B/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="编程">
+          编程 <span class="badge rounded-pill">2</span>
+        </a><a href="/zh-cn/tags/%E4%B8%BB%E5%8A%A8%E6%89%AB%E6%8F%8F%E5%99%A8/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="主动扫描器">
+          主动扫描器 <span class="badge rounded-pill">1</span>
+        </a><a href="/zh-cn/tags/%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="代码阅读">
+          代码阅读 <span class="badge rounded-pill">1</span>
+        </a><a href="/zh-cn/tags/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="安全开发">
+          安全开发 <span class="badge rounded-pill">1</span>
+        </a><a href="/zh-cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="网络安全">
+          网络安全 <span class="badge rounded-pill">1</span>
+        </a></div>
+    </section></div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"><li class="nav-item">
+    <a class="nav-link social-link" href="mailto:iguytgh@protonmail.com" title="Email">
+      <i class="fas fa-fw fa-2x fa-envelope"></i>
+    </a>
+  </li><li class="nav-item">
+      <a class="nav-link social-link" target="_blank" href="https://github.com/tutorial0" title="GitHub">
+        <i class="fa-fw fa-2x fab fa-github"></i>
+      </a>
+    </li><li class="nav-item">
+    <a class="nav-link social-link" target="_blank" href="/zh-cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/index.xml" title="RSS">
+      <i class="fas fa-fw fa-2x fa-rss"></i>
+    </a>
+  </li></nav>
+<div class="copyright mb-2">
+  Copyright © 2021-2021 tutorial. All Rights Reserved.
+</div>
+</footer>
+<a id="btnScrollToTop" class="btn-scroll-to-top">
+  <i class="fas fa-fw fa-chevron-circle-up fa-2x"></i>
+</a>
+<script async src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-60bcc43f59f2d04f"></script></body>
+</html>

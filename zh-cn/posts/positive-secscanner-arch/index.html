@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>主动扫描器没有架构一说吗? | tutorial&#39;s Blog</title><link rel="apple-touch-icon" href="/images/favicons/apple-touch-icon.png" sizes="180x180">
+<link rel="icon" href="/images/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/images/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="manifest" href="/images/favicons/manifest.json">
+<link rel="icon" href="/images/favicons/favicon.ico">
+<meta name="keywords" content="" />
+<meta name="description" content="黑盒漏洞扫描器有哪些架构，以及它们的主要特点和适用场景" /><meta itemprop="name" content="主动扫描器没有架构一说吗?">
+<meta itemprop="description" content="黑盒漏洞扫描器有哪些架构，以及它们的主要特点和适用场景"><meta itemprop="datePublished" content="2021-09-26T11:16:22+08:00" />
+<meta itemprop="dateModified" content="2021-09-26T11:16:22+08:00" />
+<meta itemprop="wordCount" content="2842">
+<meta itemprop="keywords" content="编程,网络安全,主动扫描器,安全开发," /><meta property="og:title" content="主动扫描器没有架构一说吗?" />
+<meta property="og:description" content="黑盒漏洞扫描器有哪些架构，以及它们的主要特点和适用场景" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/zh-cn/posts/positive-secscanner-arch/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-09-26T11:16:22+08:00" />
+<meta property="article:modified_time" content="2021-09-26T11:16:22+08:00" /><meta property="og:site_name" content="tutorial&#39;s Blog" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="主动扫描器没有架构一说吗?"/>
+<meta name="twitter:description" content="黑盒漏洞扫描器有哪些架构，以及它们的主要特点和适用场景"/>
+<meta data-name="palette" content="brown"><link rel=stylesheet href="/css/bundle.min.ce383e7297312216c2d2ced30574d5a9ae83c451db9f064a454509955ae2462d.css" integrity="sha256-zjg&#43;cpcxIhbC0s7TBXTVqa6DxFHbnwZKRUUJlVriRi0=" crossorigin="anonymous"><script src="/js/bundle.min.ad6d83537f5b4374c837a12a76422496582e04d1dde91bbb443641ec12c506c6.js" integrity="sha256-rW2DU39bQ3TIN6EqdkIkllguBNHd6Ru7RDZB7BLFBsY=" crossorigin="anonymous"></script><script defer src="/js/katex.e1cebc63ad855fdf787661e76de78e21c446bda0d4dddca66db0e345eb1c2be4.js" integrity="sha256-4c68Y62FX994dmHnbeeOIcRGvaDU3dymbbDjRescK&#43;Q=" crossorigin="anonymous"></script>
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?9a57acadb285a103e5e16219a11d55af";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script></head><body class="mode-dark"><header><nav class="navbar navbar-expand-xl fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="/zh-cn/">
+      <img class="logo" alt="Logo" src="/images/logo.png" loading="lazy">tutorial</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-1 mb-2 mb-lg-0"><form class="search-bar d-flex ms-1" action="/zh-cn/search">
+  <div class="input-group input-group-sm">
+    <button class="btn btn-search disabled position-absolute left-0" type="submit"><i class="fas fa-fw fa-search"></i></button>
+    <input class="form-control rounded-pill" id="searchQuery" name="q" type="search" aria-label="Search">
+  </div>
+</form></ul><ul class="navbar-nav me-1 mb-2 mb-lg-0 me-1 ms-auto"><li class="nav-item">
+  <a class="nav-link" data-bs-toggle="offcanvas" href="#offcanvasSettings" role="button"
+    aria-controls="offcanvasSettings">
+    <i class="fas fa-fw fa-sliders-h"></i> 设置
+  </a>
+</li>
+
+<div class="offcanvas offcanvas-end surface h-100" tabindex="-1" id="offcanvasSettings"
+  aria-labelledby="offcanvasSettingsLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" w id="offcanvasSettingsLabel"><i class="fas fa-fw fa-sliders-h"></i> 设置</h5>
+    <a role="button" data-bs-dismiss="offcanvas" aria-label="Close">
+      <span class="fas fa-2x fa-fw fa-times"></span>
+    </a>
+  </div>
+  <div class="offcanvas-body"><section class="setting">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-language"></i> 语言</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <select class="form-select form-select-sm language-picker" aria-label="Language dropdown" onchange="window.location = this.value;">
+          <option value="/zh-cn/" selected>简体中文</option><option value="/zh-tw/"></option></select>
+    </div>
+  </form>
+</section>
+<section class="setting">
+  <form class="font-size-switcher-form row">
+    <div class="col-auto">
+      <label for="fontSize" class="form-label"><i class="fas fa-fw fa-font"></i> 字体大小</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <input type="range" class="form-range" min="-2" max="2" id="fontSize">
+    </div>
+  </form>
+</section>
+
+<section class="setting palettes">
+  <form class="row">
+    <div class="col-auto">
+      <label><i class="fas fa-fw fa-palette"></i> 配色</label>
+    </div>
+    <div class="col-auto ms-auto">
+      <span id="btnPalette" class="btn btn-sm"><i class="fas fa-eye-dropper"></i></span>
+    </div>
+  </form>
+  <div class="container mt-2 visually-hidden" id="palettePicker">
+    <div class="btn-group"><button type="button" id="palette-blue" title="蓝色" 
+          class="btn btn-sm palette bg-blue d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-blue-gray" title="蓝灰色" 
+          class="btn btn-sm palette bg-blue-gray d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-brown" title="棕色" 
+          class="btn btn-sm palette bg-brown d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-cyan" title="青色" 
+          class="btn btn-sm palette bg-cyan d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-green" title="绿色" 
+          class="btn btn-sm palette bg-green d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-indigo" title="靛青色" 
+          class="btn btn-sm palette bg-indigo d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-orange" title="橙色" 
+          class="btn btn-sm palette bg-orange d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-pink" title="粉色" 
+          class="btn btn-sm palette bg-pink d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-purple" title="紫色" 
+          class="btn btn-sm palette bg-purple d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-red" title="红色" 
+          class="btn btn-sm palette bg-red d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-teal" title="蓝绿色" 
+          class="btn btn-sm palette bg-teal d-flex align-items-center justify-content-center">
+        </button><button type="button" id="palette-yellow" title="黄色" 
+          class="btn btn-sm palette bg-yellow d-flex align-items-center justify-content-center">
+        </button></button>
+    </div>
+  </div>
+</section></div>
+</div></ul>
+    </div>
+  </div>
+</nav>
+</header>
+<main role="main" class="container">
+      <div class="row content">
+<div class="col-lg-8">
+  <div class="container"><nav class="row" aria-label="breadcrumb">
+  <ol class="breadcrumb surface"><li class="breadcrumb-item"><a href="/zh-cn/">主页</a></li><li class="breadcrumb-item"><a href="/zh-cn/posts/">Posts</a></li><li class="breadcrumb-item active">主动扫描器没有架构一说吗?</li></ol>
+</nav><article class="post row surface"><div class="post-toolbox">
+  <div class="col-12 d-none d-lg-block">
+    <a id="sidebarToggler" class="fas fa-fw fa-2x fa-expand-alt" role="button"></a>
+  </div>
+</div>
+<h1 class="post-title my-3">主动扫描器没有架构一说吗?</h1><div class="post-meta mb-3">
+  <span class="post-date me-2">
+    <i class="fas fa-fw fa-calendar-alt"></i>2021-09-26
+  </span>
+  <span class="post-reading-time me-2">
+    <i class="fas fa-fw fa-coffee"></i>6 分钟阅读
+  </span>
+<a href="/zh-cn/categories/security/" class="post-taxonomy">#Security</a><a href="/zh-cn/tags/%E7%BC%96%E7%A8%8B/" class="post-taxonomy">#编程</a><a href="/zh-cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" class="post-taxonomy">#网络安全</a><a href="/zh-cn/tags/%E4%B8%BB%E5%8A%A8%E6%89%AB%E6%8F%8F%E5%99%A8/" class="post-taxonomy">#主动扫描器</a><a href="/zh-cn/tags/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/" class="post-taxonomy">#安全开发</a></div>
+<div class="post-share mb-3"><div class="addthis_inline_share_toolbox"></div></div><a id="btnTOC" class="fas fa-fw fa-2x fa-list-alt position-fixed" data-bs-toggle="offcanvas" href="#offcanvasTOC" aria-controls="offcanvasTOC" role="button">
+</a>
+
+<div class="offcanvas offcanvas-end surface" tabindex="-1" id="offcanvasTOC" aria-labelledby="offcanvasTOCLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasTOCLabel">目录</h5>
+    <a role="button" data-bs-dismiss="offcanvas" aria-label="Close">
+      <span class="fas fa-2x fa-fw fa-times"></span>
+    </a>
+  </div>
+  <div class="offcanvas-body">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#低漏报低误报">低漏报+低误报？</a></li>
+    <li><a href="#只考虑漏报和误报">只考虑漏报和误报？</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#有哪些漏扫架构">有哪些漏扫架构</a>
+      <ul>
+        <li><a href="#信息网状架构">信息网状架构</a></li>
+        <li><a href="#线性架构">线性架构</a></li>
+        <li><a href="#瀑布式架构">瀑布式架构</a></li>
+        <li><a href="#多层瀑布架构">多层瀑布架构</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div><div class="post-content mb-3"><p>记得以前看过一个文章，有一句话让我一直忘不掉，他说“黑盒扫描器根本没什么架构，只要POC够多就好了“。
+当时我以为只是一家之言，应该不会有什么人赞同，但是没想到这些年不管是线下和人聊天还是线上看人文章，都没什么反对。
+所以，今天写这个文章，就是想证明下其实扫描器也是有不同的架构的，并且在一些不同场景下会有不同的最佳架构。</p>
+<h1 id="什么是好的漏扫">什么是好的漏扫</h1>
+<h2 id="低漏报低误报">低漏报+低误报？</h2>
+<p>理想状态下，我们希望我们的黑盒扫描器能<strong>尽可能低漏报的发现尽量多的漏洞</strong>。但很可惜，低漏报和低误报这俩在很多情况下是矛盾的。
+想要做到低漏报，就要尽量多的触发各种可能的FUZZ，但越多的FUZZ越容易触发防护措施，导致误报。即使是在去掉防护措施任君采撷的场景下，一堆参数FUZZ也可能导致程序出BUG、反应慢等等问题，进而触发更多误报。
+换个角度来说，从投入上来考虑，如果想让扫描器尽量多的扫出漏洞，就要尽量多的增加POC，但同时为了精准，又要对每个POC预期的返回进行精确的定义。这就把本来就挺复杂的POC编写任务的难度又提高了一点，自然就增加了开发成本。
+所以，低漏报还是低误报是我们事先一定要做好的取舍，而不是两者都要，小孩子才说我全都要，大人都知道身体受不了。
+从本质上来说，这个取舍是一个基于成本的取舍。即使你家大业大，毫不在意开发过程的时间或资金投入，对扫描时间和扫描成本也毫不在意，你觉得你优势很大，但也请结合安全人员薪资和开发时间以及漏洞出现频率算算账，这个成本并不小，而且是个无底洞。</p>
+<h2 id="只考虑漏报和误报">只考虑漏报和误报？</h2>
+<p>但漏扫只要关注漏报误报吗？也不是，漏扫还有很多用处，比如作为渗透测试的辅助工具。这时候相对于<strong>尽可能低漏报的发现尽量多的漏洞</strong>这个需求，更希望它能做到<strong>尽可能多的触发一些值得注意的信息</strong>，给我们在后续的测试中省点力。特别是做一些高难度的渗透的时候，大家会希望有这样的工具，因为这种场景下，很难有直接的漏洞产出，能给到有用的信息就已经很有价值了。在这种场景下，就根本无所谓什么漏报和误报了。</p>
+<h1 id="什么漏扫架构最好">什么漏扫架构最好？</h1>
+<p>上面两段分析已经说明，要看具体情况分析，某些情况下的“好”扫描器，放到其他情况就没什么用。
+我按照一般的使用场景分一下，大概有这些：</p>
+<p><img class="img-fluid" src="/images/pssa-img1.png" alt="图1"  loading="lazy" />
+</p>
+<p>那他们适合什么架构呢，先要总结下有哪些架构存在。</p>
+<h2 id="有哪些漏扫架构">有哪些漏扫架构</h2>
+<p>探讨完了如何评价一个漏扫，那么我们再回到漏扫架构的问题，因为每种不同的架构是希望解决不同漏扫的问题而产生的。
+当然，由于我个人能力限制，这里写的只是我知道的架构，也欢迎各位补充。
+由于之前也没有人给他们的架构命名，所以我自己随便起名，希望尽量做到能概括架构特点。</p>
+<h3 id="信息网状架构">信息网状架构</h3>
+<p>记得最初发现这种漏扫架构是因为逆向了BugScan，初见时的震惊我到现在都还记得，它的架构颠覆了我对漏扫的印象，所以我把这类架构放到第一个来说。顺带一说，对这位写出BugScan的前辈我还是挺佩服的，不过由于这位大佬目前似乎退出安全圈子研究别的领域，所以就不提他的名字，不打扰人家了。
+故事说完，来说框架，当时我逆向了这个扫描器，发现它的结构和常见的扫描器的确不同，体现在这几点设计上：</p>
+<ul>
+<li>一切都是插件</li>
+<li>一切插件都是平等的</li>
+<li>信息为所有插件共享</li>
+<li>信息是可以多次处理的
+上面这些听起来不容易理解，我就直接说一下这样设计的好处：</li>
+</ul>
+<ol>
+<li>
+<p>核心功能改动简单，对整体影响非常小</p>
+<p>即使是爬虫、被动扫描、CMS识别这样的功能，也只是插件而已，对其他插件来说是透明的</p>
+</li>
+<li>
+<p>能更多的发现漏洞或信息</p>
+<p>在其他架构里，信息只会按顺序处理一次就结束了，但渗透过程并不是那么理想的，在”信息收集“阶段就能收集完所有信息，然后进入”测试“阶段去利用所有信息。而由于插件间可以互相调用，信息又是共享的，所以在整个扫描阶段，扫描器其实都是在做信息收集和处理的。这和我们人工来做渗透测试的相似度更高，效果也更好</p>
+</li>
+<li>
+<p>插件独立，开发难度降低</p>
+<p>似乎所有支持插件的架构，插件都比较独立，但是在这种架构下，插件的独立程度可以更高，因为插件之间是可以动态交互来互相调用功能的，这就省掉了很多开发的逻辑。举个例子，在这种框架里开发一个爬虫该怎么做？很简单，只需要访问单个URL并解析链接，然后对新发现的链接，推送新的任务即可</p>
+</li>
+<li>
+<p>天然支持分布式</p>
+<p>这种设计下，插件和调度核心非常容易拆开，所以很容易做成分布式的样子</p>
+</li>
+<li>
+<p>更容易结合人工做到半自动化扫描</p>
+<p>其他的设计下，人工是无法干预的，扫描器跑起来就和人无关了，跑起来之前，你也只能设置一些简单的选项，顶多有一些认证信息设置之类。但是对于这种扫描器，你几乎可以把自己已知的各种信息配置起来。比如你已经知道系统使用了某个CMS，那么就可以在初始触发的信息处增加这个信息，扫描器就会认为有插件识别出了CMS，并直接进行后续利用</p>
+</li>
+</ol>
+<p>这样的框架在尽量多的信息收集时，非常有用。不过也更容易触发防护，因为它对于信息的利用率是非常高的。</p>
+<h3 id="线性架构">线性架构</h3>
+<p>这是最常见的两种架构之一，比如PocSuite这样的漏扫，有的人甚至认为它不应该叫漏扫，因为它就只是把一堆POC打出去。
+这里的设计就很简单：</p>
+<ul>
+<li>不考虑是否可能被拦截，尽量发现最严重的问题</li>
+<li>不需要提供更多后续信息，没有结果就算了</li>
+</ul>
+<p>这样的架构一般适合做高危漏洞巡航，比如全公司、全网扫某漏洞。所以一般这样的框架还会做好并发功能或分布式扫描功能。
+当然，这样的写法，最大的优点是，开发简单同时提供了一个规范的POC结构，对于组织进行POC收集最好不过。</p>
+<h3 id="瀑布式架构">瀑布式架构</h3>
+<p>这是最经典的扫描架构，AWVS就是这种架构的扫描器。
+它的设计包括：</p>
+<ul>
+<li>分阶段，按照标准的信息收集、FUZZ之类流程进行</li>
+<li>插件是二等公民，模块位于插件之上</li>
+<li>谁生产的信息谁消费掉，只会用一次</li>
+<li>插件之间无法通信
+这样的设计也有一些好处，即它能尽量少的干扰目标，尽量少的触发WAF等防护。
+那么代价是什么呢？代价就是对一些信息的遗漏，也就是一些漏报。</li>
+</ul>
+<h3 id="多层瀑布架构">多层瀑布架构</h3>
+<p>这是对于经典扫描架构的一些改良，最初见到似乎是猪猪侠给出的那个分布式扫描器(Python+Celery)。不过我也只是有个大概印象，可能不是这个扫描器，时间长了有些记不清了。
+它的主要设计包括：</p>
+<ul>
+<li>和瀑布架构一样分阶段进行测试</li>
+<li>每个阶段支持信息共享</li>
+<li>同阶段插件平等
+这样的设计，看起来采取了瀑布式架构的优点和网状架构的优点，但是并没能完整利用到网状架构能不停进行信息搜集的好处，其实和瀑布架构差不多，不过更方便进行分布式扫描，对于一些特殊的场景会有一些用处。比如某些目标机器在内网，或者有大量目标要扫描。</li>
+</ul>
+<h1 id="选择最适合的架构">选择最适合的架构</h1>
+<p>综上，最适合的架构才是最好的，虽说我上面已经基本给出了每种架构适合的场景，但还是不太直观，所以我写了个简单的表格，尽量覆盖常见的黑盒扫描器使用场景。
+不过，这个表包含了我自己对每个场景的需求的判断，如果你对场景的基础假设，特别是漏报和误报的容忍度与我不同，那你的结论可能和我不一样，所以，此表仅供参考。</p>
+<p><img class="img-fluid" src="/images/pssa-img2.png" alt="图2"  loading="lazy" />
+</p>
+<h1 id="总结">总结</h1>
+<p>可能在一些人看来我上面写的不太详细，毕竟没有给出一些模块图之类的介绍，只是简单介绍了主要设计思路和效果。但是毕竟我的目的就是想要证明下的确存在不同的扫描器架构，并且他们适合不同场景，我觉得这样就足够了。</p>
+</div><div class="post-copyright mb-4">
+  <h3>版权</h3><div class="post-cc">本作品采用 <a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh">CC BY-NC-ND 4.0 <i class="fab fa-fw fa-creative-commons"></i><i class="fab fa-fw fa-creative-commons-by"></i><i class="fab fa-fw fa-creative-commons-nc"></i><i class="fab fa-fw fa-creative-commons-nd"></i></a> 授权。</div>
+</div><hr /><div class="post-navs d-flex mb-3 justify-content-between">
+  <div class="post-nav w-50"><div class="prev-post btn btn-sm">
+      <a href="/zh-cn/posts/about-code-reading/">对代码阅读思路的研究</a>
+    </div></div>
+  <div class="post-nav flex-row-reverse"></div>
+</div><section class="related-posts">
+    <h3>相关文章</h3>
+    <ul class="related-posts"><li><a href="/zh-cn/posts/about-code-reading/">对代码阅读思路的研究</a></li></ul>
+  </section></article><div class="post-comments surface row"><script src="https://utteranc.es/client.js"
+  repo="razonyang/hugo-theme-bootstrap"
+  issue-term="pathname"
+  label=""
+  theme="github-dark"
+  crossorigin="anonymous"
+  async>
+</script></div></div>
+</div><aside class="col-lg-4 sidebar d-flex">
+  <div class="container"><section class="profile surface row">
+  <div class="col-xl-6 d-flex align-items-center justify-content-center">
+    <img class="profile-avatar img-fluid" src="/images/profile.jpg" alt="tutorial" loading="lazy">
+  </div>
+  <div class="col-xl-6">
+    <h5 class="profile-name my-2">tutorial</h5><div class="profile-bio mb-2">安全工程师, 程序员, 读者</div><div class="profile-company mb-2"><i class="fas fa-fw fa-building"></i>Google</div><div class="profile-location mb-2"><i class="fas fa-fw fa-map-marker-alt"></i>Earth</div></div>
+</section><section class="recent-posts row surface">
+  <h4>最近文章</h4>
+  <ul><li><a href="/zh-cn/posts/positive-secscanner-arch/">主动扫描器没有架构一说吗?</a></li><li><a href="/zh-cn/posts/about-code-reading/">对代码阅读思路的研究</a></li></ul>
+</section><section class="taxonomy-categories row surface">
+      <h4>
+        <a href="/zh-cn/categories">分类</a>
+      </h4>
+      <div><a href="/zh-cn/categories/coding/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="Coding">
+          Coding <span class="badge rounded-pill">1</span>
+        </a><a href="/zh-cn/categories/security/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="Security">
+          Security <span class="badge rounded-pill">1</span>
+        </a></div>
+    </section><section class="taxonomy-series row surface">
+      <h4>
+        <a href="/zh-cn/series">专栏</a>
+      </h4>
+      <div><a href="/zh-cn/series/%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB%E7%B3%BB%E5%88%97/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="代码阅读系列">
+          代码阅读系列 <span class="badge rounded-pill">1</span>
+        </a></div>
+    </section><section class="taxonomy-tags row surface">
+      <h4>
+        <a href="/zh-cn/tags">标签</a>
+      </h4>
+      <div><a href="/zh-cn/tags/%E7%BC%96%E7%A8%8B/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="编程">
+          编程 <span class="badge rounded-pill">2</span>
+        </a><a href="/zh-cn/tags/%E4%B8%BB%E5%8A%A8%E6%89%AB%E6%8F%8F%E5%99%A8/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="主动扫描器">
+          主动扫描器 <span class="badge rounded-pill">1</span>
+        </a><a href="/zh-cn/tags/%E4%BB%A3%E7%A0%81%E9%98%85%E8%AF%BB/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="代码阅读">
+          代码阅读 <span class="badge rounded-pill">1</span>
+        </a><a href="/zh-cn/tags/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="安全开发">
+          安全开发 <span class="badge rounded-pill">1</span>
+        </a><a href="/zh-cn/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" class="post-taxonomy rounded btn btn-sm me-2 mb-2" title="网络安全">
+          网络安全 <span class="badge rounded-pill">1</span>
+        </a></div>
+    </section></div>
+</aside>
+</div>
+    </main><footer class="footer mt-auto py-3 text-center container"><nav class="social-links nav my-2 justify-content-center"><li class="nav-item">
+    <a class="nav-link social-link" href="mailto:iguytgh@protonmail.com" title="Email">
+      <i class="fas fa-fw fa-2x fa-envelope"></i>
+    </a>
+  </li><li class="nav-item">
+      <a class="nav-link social-link" target="_blank" href="https://github.com/tutorial0" title="GitHub">
+        <i class="fa-fw fa-2x fab fa-github"></i>
+      </a>
+    </li></nav>
+<div class="copyright mb-2">
+  Copyright © 2021-2021 tutorial. All Rights Reserved.
+</div>
+</footer>
+<a id="btnScrollToTop" class="btn-scroll-to-top">
+  <i class="fas fa-fw fa-chevron-circle-up fa-2x"></i>
+</a>
+<script async src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-60bcc43f59f2d04f"></script></body>
+</html>
